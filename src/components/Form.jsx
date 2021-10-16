@@ -1,79 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react'
+import styled from 'styled-components'
 import SubmitButton from './SubmitButton'
 
-/*
-@import './base';
-
-.tom {
+const Tom = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   margin: 30px 0;
+`
 
-  header {
-    margin-bottom: 10px;
-  }
+const TomHeader = styled.header`
+  margin-bottom: 10px;
+`
+
+const InputGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 5% 0;
+`
+
+const Select = styled.select`
+  padding: 10px;
+  margin: 20px 0;
+  background-color: $black;
+  border: none;
+  border-bottom: 2px solid $gray;
+  transition: $transition;
+  outline: none;
+`
+
+const RadioGroup = styled.div`
+  display: flex;
+  margin: 20px 0 20px 10px;
+  border: none;
+  border-bottom: 2px solid $gray;
+  font-weight: bold;
+  cursor: pointer;
+`
+
+const RadioItem = styled.input`
+  display: none;
   
-  .input-group {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 5% 0;
-
-    @media (max-width: 354px) {
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    select {
-      padding: 10px;
-      margin: 20px 0;
-      background-color: $black;
-      border: none;
-      border-bottom: 2px solid $gray;
-      transition: $transition;
-      outline: none;
-    }
-    
-    .group-radio {
-      display: flex;
-      margin: 20px 0 20px 10px;
-      border: none;
-      border-bottom: 2px solid $gray;
-      font-weight: bold;
-      cursor: pointer;
-      
-      input[type=radio] {
-        display: none;
-      }
-      
-      input[type=radio]:checked+.button {
-        background-color: $blue;
-        border-radius: $radius;
-      }
-      
-      .button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 20px;
-        height: 20px;
-        padding: 20px;
-        background-color: transparent;
-        transition: $transition;
-        border-radius: $radius;
-    
-        &:hover {
-          background-color: lighten($color: $black, $amount: 10);
-        }
-      }
-    }
+  &:checked + .button {
+    background-color: $blue;
+    border-radius: $radius;
   }
-}
-*/
+`
 
-const Form = ({ chord, setChord, acident, setAcident, terca, setTerca }) => {
+const RadioButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 20px;
+  background-color: transparent;
+  transition: $transition;
+  border-radius: $radius;
 
+  &:hover {
+    background-color: lighten($color: $black, $amount: 10);
+  }
+`
+
+export default function Form({ chord, setChord, acident, setAcident, terca, setTerca }) {
   // Exibir/ocultar acidents para as notas E, B, C, F
   const [ sustenidoDisplay, setSustenidoDisplay ] = useState('flex')
   const [ bemolDisplay, setBemolDisplay] = useState('flex')
@@ -135,50 +126,48 @@ const Form = ({ chord, setChord, acident, setAcident, terca, setTerca }) => {
   }
 
   return (
-    <React.Fragment>
-      <div className='tom'>
+    <Tom>
+      <TomHeader>
+        <h2>
+          Qual será o acorde tom da sua música?
+        </h2>
+      </TomHeader>
 
-        <header><h2>Qual será o acorde tom da sua música?</h2></header>
+      <InputGroup>
 
-        <div className="input-group" style={{ justifyContent: inputGroupJustifyContent }}>
+        <Select name='chord' onChange={event => setChord(event.target.value)}>
+          <option value="C">C</option>
+          <option value="D">D</option>
+          <option value="E">E</option>
+          <option value="F">F</option>
+          <option value="G">G</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="random">Aleatório</option>
+        </Select>
 
-          <select name='chord' onChange={event => setChord(event.target.value)}>
-            <option value="C">C</option>
-            <option value="D">D</option>
-            <option value="E">E</option>
-            <option value="F">F</option>
-            <option value="G">G</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="random">Aleatório</option>
-          </select>
+        <RadioGroup>
+          <RadioItem type="radio" name="acident" value='none' defaultChecked ref={checkAcidentNone} />
+          <RadioButton onClick={event => auxAcident(event)}> </RadioButton>
 
-          <div className='group-radio' style={{ display: groupRadioDisplay }}>
+          <RadioItem type="radio" name="acident" value='sustenido' />
+          <RadioButton onClick={event => auxAcident(event)}>#</RadioButton>
 
-            <input type="radio" name="acident" value='none' defaultChecked ref={checkAcidentNone}/>
-            <div className='button' onClick={event => auxAcident(event)}> </div>
+          <RadioItem type="radio" name="acident" value='bemol' />
+          <RadioButton onClick={event => auxAcident(event)}>b</RadioButton>
+        </RadioGroup>
 
-            <input type="radio" name="acident" value='sustenido' />
-            <div className='button' onClick={event => auxAcident(event)} style={{ display: sustenidoDisplay }}>#</div>
+        <RadioGroup>
+          <RadioItem type="radio" name="terca" value='major' defaultChecked />
+          <RadioButton onClick={event => auxTerca(event)}>M</RadioButton>
 
-            <input type="radio" name="acident" value='bemol' />
-            <div className='button' onClick={event => auxAcident(event)} style={{ display: bemolDisplay }}>b</div>
-          </div>
+          <RadioItem type="radio" name="terca" value='minor' />
+          <RadioButton onClick={event => auxTerca(event)}>m</RadioButton>
+        </RadioGroup>
 
-          <div className='group-radio' style={{ display: groupRadioDisplay }}>
-            <input type="radio" name="terca" value='major' defaultChecked />
-            <div className='button' onClick={event => auxTerca(event)}>M</div>
-            <input type="radio" name="terca" value='minor' />
-            <div className='button' onClick={event => auxTerca(event)}>m</div>
-          </div>
-
-        </div>
-      </div>
-
+      </InputGroup>
+    
       <SubmitButton url={'/result'} text='Criar sequência de acordes para a minha música!' backgroundColor='pink' />
-
-    </React.Fragment>
+    </Tom>
   )
 }
-
-export default Form

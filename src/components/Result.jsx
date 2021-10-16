@@ -1,68 +1,38 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import Part from './Part'
 import SubmitButton from './SubmitButton'
-
 import getRandomChord from '../utils/getRandomChord'
 import getRandomMusic from '../utils/getRandomMusic'
 import getScale from '../utils/getScale'
 
-/*
-.result {
+const StyledResult = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   margin: 30px 0;
+`
 
-  header {
-    margin-bottom: 10px;
-  }
-  
-  .chords {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    padding: 5% 0;
+const ResultHeader = styled.header`
+  margin-bottom: 10px;
+`
 
-    .part {
-      margin-bottom: 50px;
-      
-      h3 {
-        margin-bottom: 20px;
-      }
+const Chords = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 5% 0;
+`
 
-      .content {
-        .note {
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 45px;
-          height: 45px;
-          margin-right: 5px;
-          margin: 0 5px 5px 0;
-          border-radius: 50%;
-          font-weight: 700;
-          font-family: 'Ubuntu Mono', monospace;
-          color: $pink;
-          background-color: $white;
-        }
-      }
-    }
+const SourceTitle = styled.h4`
+  margin-bottom: 20px;
+`
 
-    .source {
-      
-      h4 {
-        margin-bottom: 20px;
-      }
+const SourceContent = styled.div`
+  text-align: center;
+`
 
-      .inspiration {
-        text-align: center;
-      }
-    }
-  }
-}
-*/
-
-const Result = ({ chord, acident, terca }) => {
+export default function Result({ chord, acident, terca }) {
 
   let intro = []
   let verse1 = []
@@ -148,12 +118,16 @@ const Result = ({ chord, acident, terca }) => {
   }, [])
 
   return (
-    <React.Fragment>
-      <div className='result'>
+    <>
+      <StyledResult>
 
-        <header><h2>Os acordes da sua nova música são:</h2></header>
+        <ResultHeader>
+          <h2>
+            Os acordes da sua nova música são:
+          </h2>
+        </ResultHeader>
 
-        <div className='chords'>
+        <Chords>
 
           <Part title={ 'Introdução' } notes={ intro }></Part>
           <Part title={ 'Verso 1' } notes={ verse1 }></Part>
@@ -163,20 +137,20 @@ const Result = ({ chord, acident, terca }) => {
           <Part title={ 'Passagem' } notes={ pass }></Part>
           <Part title={ 'Final' } notes={ final }></Part>
 
-          <div className="source">
-            <h4>A inspiração para a sua música foi:</h4>
-            <div className="inspiration"><b>{'music.name'}</b> do artista <b>{'music.artist'}</b></div>
+          <div>
+            <SourceTitle>A inspiração para a sua música foi:</SourceTitle>
+            <SourceContent>
+              <b>{'music.name'}</b> do artista <b>{'music.artist'}</b>
+            </SourceContent>
           </div>
 
-        </div>
-      </div>
+        </Chords>
+      </StyledResult>
 
       <SubmitButton
         url={'/'}
         text='Gerar nova sequência de acordess...'
         backgroundColor='blue' />
-    </React.Fragment>
+    </>
   )
 }
-
-export default Result
