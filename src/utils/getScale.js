@@ -1,15 +1,17 @@
 import scales from '../data/scales.json'
 
-const getScale = chord => {  // Receber chord e converter na escala
+// Receber chord e converter na escala
+const getScale = chord => {
+  // Criação da escala para a música
+  let scale
 
-  let scale // Criação da escala para a música
-
-  Object.entries(scales).forEach( ([key, value]) => { // For nas entradas do objeto
-    if (chord == key) {
-      scale = value // Quando o chord escolhido for igual à key, scale recebe o value
+  // For nas entradas do objeto
+  Object.entries(scales).forEach(([ key, value ]) => {
+    if (chord === key) {
+      scale = value
     }
   })
-  
+
   return scale
 }
 

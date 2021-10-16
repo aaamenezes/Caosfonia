@@ -4,11 +4,10 @@ import Header from '../src/components/Header'
 import Footer from '../src/components/Footer'
 
 import Form from '../src/components/Form'
-import Result from '../src/components/Result'
+// import Result from '../src/components/Result'
 import Main from '../src/components/Main'
 
 export default function Home() {
-
   const [ chord, setChord ] = useState('C')
   const [ acident, setAcident ] = useState('none')
   const [ terca, setTerca ] = useState('major')
