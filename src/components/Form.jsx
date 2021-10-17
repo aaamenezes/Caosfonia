@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import updateOptions from '../utils/updateOptions'
+import RadioButton from './Form/RadioButton'
+import RadioGroup from './Form/RadioGroup'
+import RadioItem from './Form/RadioItem'
+import Select from './Form/Select'
 import SubmitButton from './SubmitButton'
 
 const StyledForm = styled.form`
@@ -11,133 +14,85 @@ const StyledForm = styled.form`
   padding: 5% 0;
 `
 
-const Select = styled.select`
-  padding: 10px;
-  margin: 20px 0;
-  background-color: ${ ({ theme }) => theme.color.black };
-  border: none;
-  border-bottom: ${ ({ theme }) => `2px solid ${ theme.color.gray }` };
-  transition: ${ ({ theme }) => theme.transition };
-  outline: none;
-  cursor: pointer;
-`
-
-const RadioGroup = styled.div`
-  display: flex;
-  margin: 20px 0 20px 10px;
-  border: none;
-  border-bottom: ${ ({ theme }) => `2px solid ${ theme.color.gray }` };
-  font-weight: bold;
-  cursor: pointer;
-`
-
-const RadioItem = styled.input`
-  display: none;
-  
-  &:checked + button {
-    color: ${ ({ theme }) => theme.color.white };
-    background-color: ${ ({ theme }) => theme.color.blue };
-    border-radius: ${ ({ theme }) => theme.borderRadius };
-  }
-`
-
-const RadioButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  padding: 20px;
-  border: none;
-  border-radius: ${ ({ theme }) => theme.borderRadius };
-  background-color: transparent;
-  transition: ${ ({ theme }) => theme.transition };
-  cursor: pointer;
-
-  &:hover {
-    color: ${ ({ theme }) => theme.color.pink };
-  }
-`
-
-export default function Form({
-  chord, setChord, acident, setAcident, terca, setTerca
-}) {
-  // Exibir/ocultar acidents para as notas E, B, C, F
-  const [ sustenidoDisplay, setSustenidoDisplay ] = useState('flex')
-  const [ bemolDisplay, setBemolDisplay ] = useState('flex')
-
-  // Exibir/ocultar input:radios quando o usuário selecionar a nota random
-  const [ groupRadioDisplay, setGroupRadioDisplay ] = useState('flex')
-  const [ inputsJustifyContent, setInputsJustifyContent ] = useState('space-between')
-
-  // Marcar check no acident none
-  const checkAcidentNone = useRef(null)
+export default function Form() {
+  const [ chord, setChord ] = useState('C')
+  const [ acident, setAcident ] = useState('none')
+  const [ terca, setTerca ] = useState('major')
 
   useEffect(() => {
-    updateOptions()
-    setAcident('none')
-    checkAcidentNone.current.click()
+    if (chord === 'C' || chord === 'E' || chord === 'F' || chord === 'B') {
+      setAcident('none')
+    }
   }, [ chord ])
 
-  function handleAcident(event) {
-    setAcident(event.target.previousSibling.value)
-    event.target.previousSibling.checked = true
-  }
+  const handleChord = event => setChord(event.target.value)
+  const handleAcident = event => setAcident(event.target.value)
+  const handleTerca = event => setTerca(event.target.value)
 
-  function handleTerca(event) {
-    setTerca(event.target.previousSibling.value)
-    event.target.previousSibling.checked = true
+  const notes = [ 'C', 'D', 'E', 'F', 'G', 'A', 'B' ]
+  const $notesList = notes.map(n => <option key={n} value={n}>{n}</option>)
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    let resultURL = '/result?'
+    resultURL += `chord=${ chord }`
+    resultURL += `&acident=${ acident }`
+    resultURL += `&terca=${ terca }`
+    window.location.href = resultURL
   }
 
   return (
-    <StyledForm>
-
-      <Select name='chord' onChange={event => setChord(event.target.value)}>
-        <option value='C'>C</option>
-        <option value='D'>D</option>
-        <option value='E'>E</option>
-        <option value='F'>F</option>
-        <option value='G'>G</option>
-        <option value='A'>A</option>
-        <option value='B'>B</option>
+    <StyledForm onSubmit={handleSubmit}>
+      <Select onChange={handleChord}>
+        {$notesList}
         <option value='random'>Aleatório</option>
       </Select>
 
       <RadioGroup>
-        <RadioItem
-          type='radio'
-          name='acident'
-          value='none'
-          defaultChecked
-          ref={checkAcidentNone}
+        <RadioItem name='acident' value='none' onChange={handleAcident} check />
+        <RadioButton
+          htmlFor='acident-none'
+          text=' '
+          active={acident === 'none'}
+          show
         />
-        <RadioButton type='button' onClick={event => handleAcident(event)} />
 
-        <RadioItem type='radio' name='acident' value='sustenido' />
-        <RadioButton type='button' onClick={event => handleAcident(event)}>
-          #
-        </RadioButton>
+        <RadioItem name='acident' value='sustenido' onChange={handleAcident} />
+        <RadioButton
+          htmlFor='acident-sustenido'
+          text='#'
+          active={acident === 'sustenido'}
+          show={chord !== 'E' && chord !== 'B'}
+        />
 
-        <RadioItem type='radio' name='acident' value='bemol' />
-        <RadioButton type='button' onClick={event => handleAcident(event)}>
-          b
-        </RadioButton>
+        <RadioItem name='acident' value='bemol' onChange={handleAcident} />
+        <RadioButton
+          htmlFor='acident-bemol'
+          text='b'
+          active={acident === 'bemol'}
+          show={chord !== 'C' && chord !== 'F'}
+        />
       </RadioGroup>
 
       <RadioGroup>
-        <RadioItem type='radio' name='terca' value='major' defaultChecked />
-        <RadioButton type='button' onClick={event => handleTerca(event)}>
-          M
-        </RadioButton>
+        <RadioItem name='terca' value='major' onChange={handleTerca} check />
+        <RadioButton
+          htmlFor='terca-major'
+          text='M'
+          active={terca === 'major'}
+          show
+        />
 
-        <RadioItem type='radio' name='terca' value='minor' />
-        <RadioButton type='button' onClick={event => handleTerca(event)}>
-          m
-        </RadioButton>
+        <RadioItem name='terca' value='minor' onChange={handleTerca} />
+        <RadioButton
+          htmlFor='terca-minor'
+          text='m'
+          active={terca === 'minor'}
+          show
+        />
       </RadioGroup>
 
       <SubmitButton
-        url='/result'
         text='Criar sequência de acordes para a minha música!'
         color='pink'
       />

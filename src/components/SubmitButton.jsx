@@ -13,6 +13,7 @@ const Submit = styled.a`
   color: ${ ({ theme }) => theme.color.white };
   background-color: ${ ({ theme, color }) => theme.color[color] };
   transition: ${ ({ theme }) => theme.transition };
+  cursor: pointer;
 
   &:hover {
     transform: scale(1.05);
@@ -22,8 +23,16 @@ const Submit = styled.a`
 `
 
 export default function SubmitButton({ color, url, text }) {
+  if (url) {
+    return (
+      <Submit href={url} color={color}>
+        {text}
+      </Submit>
+    )
+  }
+
   return (
-    <Submit href={url} color={color}>
+    <Submit as='button' type='submit' color={color}>
       {text}
     </Submit>
   )
