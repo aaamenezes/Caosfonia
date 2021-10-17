@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "dev": "next",
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint-bkp": "eslint --ignore-path .gitignore .",
+    "lint": "eslint './pages/**' './src/**'",
     "build": "next build",
     "start": "next start"
   },

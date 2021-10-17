@@ -64,10 +64,12 @@ const RadioButton = styled.button`
   }
 `
 
-export default function Form({ chord, setChord, acident, setAcident, terca, setTerca }) {
+export default function Form({
+  chord, setChord, acident, setAcident, terca, setTerca
+}) {
   // Exibir/ocultar acidents para as notas E, B, C, F
   const [ sustenidoDisplay, setSustenidoDisplay ] = useState('flex')
-  const [ bemolDisplay, setBemolDisplay] = useState('flex')
+  const [ bemolDisplay, setBemolDisplay ] = useState('flex')
 
   // Exibir/ocultar input:radios quando o usuário selecionar a nota random
   const [ groupRadioDisplay, setGroupRadioDisplay ] = useState('flex')
@@ -76,50 +78,48 @@ export default function Form({ chord, setChord, acident, setAcident, terca, setT
   // Marcar check no acident none
   const checkAcidentNone = useRef(null)
 
+  const updateOptions = () => {
+    switch (chord) {
+    case 'C':
+    case 'F':
+      setBemolDisplay('none')
+      setSustenidoDisplay('flex')
+      setGroupRadioDisplay('flex')
+      setInputGroupJustifyContent('space-between')
+      break
+    case 'D':
+    case 'G':
+    case 'A':
+      setSustenidoDisplay('flex')
+      setBemolDisplay('flex')
+      setGroupRadioDisplay('flex')
+      setInputGroupJustifyContent('space-between')
+      break
+    case 'E':
+    case 'B':
+      setSustenidoDisplay('none')
+      setBemolDisplay('flex')
+      setGroupRadioDisplay('flex')
+      setInputGroupJustifyContent('space-between')
+      break
+    case 'random':
+      setGroupRadioDisplay('none')
+      setInputGroupJustifyContent('center')
+      break
+    }
+  }
+
   useEffect(() => {
     updateOptions()
     setAcident('none')
     checkAcidentNone.current.click()
-  }, [chord])
-
-  const updateOptions = () => {
-
-    switch(chord) {
-
-      case 'C':
-      case 'F':
-        setBemolDisplay('none')
-        setSustenidoDisplay('flex')
-        setGroupRadioDisplay('flex')
-        setInputGroupJustifyContent('space-between')
-        break
-      case 'D':
-      case 'G':
-      case 'A':
-        setSustenidoDisplay('flex')
-        setBemolDisplay('flex')
-        setGroupRadioDisplay('flex')
-        setInputGroupJustifyContent('space-between')
-        break
-      case 'E':
-      case 'B':
-        setSustenidoDisplay('none')
-        setBemolDisplay('flex')
-        setGroupRadioDisplay('flex')
-        setInputGroupJustifyContent('space-between')
-        break
-      case 'random':
-        setGroupRadioDisplay('none')
-        setInputGroupJustifyContent('center')
-        break
-    }
-  }
+  }, [ chord ])
 
   const auxAcident = event => {
     setAcident(event.target.previousSibling.value)
     event.target.previousSibling.checked = true
   }
-  
+
   const auxTerca = event => {
     setTerca(event.target.previousSibling.value)
     event.target.previousSibling.checked = true
@@ -136,38 +136,48 @@ export default function Form({ chord, setChord, acident, setAcident, terca, setT
       <InputGroup>
 
         <Select name='chord' onChange={event => setChord(event.target.value)}>
-          <option value="C">C</option>
-          <option value="D">D</option>
-          <option value="E">E</option>
-          <option value="F">F</option>
-          <option value="G">G</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="random">Aleatório</option>
+          <option value='C'>C</option>
+          <option value='D'>D</option>
+          <option value='E'>E</option>
+          <option value='F'>F</option>
+          <option value='G'>G</option>
+          <option value='A'>A</option>
+          <option value='B'>B</option>
+          <option value='random'>Aleatório</option>
         </Select>
 
         <RadioGroup>
-          <RadioItem type="radio" name="acident" value='none' defaultChecked ref={checkAcidentNone} />
+          <RadioItem
+            type='radio'
+            name='acident'
+            value='none'
+            defaultChecked
+            ref={checkAcidentNone}
+          />
           <RadioButton onClick={event => auxAcident(event)}> </RadioButton>
 
-          <RadioItem type="radio" name="acident" value='sustenido' />
+          <RadioItem type='radio' name='acident' value='sustenido' />
           <RadioButton onClick={event => auxAcident(event)}>#</RadioButton>
 
-          <RadioItem type="radio" name="acident" value='bemol' />
+          <RadioItem type='radio' name='acident' value='bemol' />
           <RadioButton onClick={event => auxAcident(event)}>b</RadioButton>
         </RadioGroup>
 
         <RadioGroup>
-          <RadioItem type="radio" name="terca" value='major' defaultChecked />
+          <RadioItem type='radio' name='terca' value='major' defaultChecked />
           <RadioButton onClick={event => auxTerca(event)}>M</RadioButton>
 
-          <RadioItem type="radio" name="terca" value='minor' />
+          <RadioItem type='radio' name='terca' value='minor' />
           <RadioButton onClick={event => auxTerca(event)}>m</RadioButton>
         </RadioGroup>
 
       </InputGroup>
-    
-      <SubmitButton url={'/result'} text='Criar sequência de acordes para a minha música!' backgroundColor='pink' />
+
+      <SubmitButton
+        url='/result'
+        text='Criar sequência de acordes para a minha música!'
+        backgroundColor='pink'
+      />
     </Tom>
   )
 }

@@ -20,7 +20,7 @@ const Submit = styled.a`
   }
 `
 
-export default function SubmitButton({ backgroundColor, url, text}) {
+export default function SubmitButton({ backgroundColor, url, text }) {
   return (
     <Submit href={url} backgroundColor={backgroundColor}>
       {text}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-
-import Header from '../src/components/Header'
+import PageHeader from '../src/components/PageHeader'
 import Footer from '../src/components/Footer'
 
 import Form from '../src/components/Form'
@@ -14,7 +13,7 @@ export default function Home() {
 
   return (
     <>
-      <Header />
+      <PageHeader />
       <Main>
         <Form
           chord={chord}
