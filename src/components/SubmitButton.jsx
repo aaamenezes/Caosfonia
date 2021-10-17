@@ -2,16 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Submit = styled.a`
+  grid-column: 1 / 4;
   width: fit-content;
   padding: 20px;
-  margin-bottom: 30px;
+  margin: 0 auto 30px;
   font-weight: bold;
   text-decoration: none;
   border: none;
-  color: $white;
-  transition: ${ ({ theme }) => theme.transition };
   border-radius: ${ ({ theme }) => theme.borderRadius };
-  background-color: ${ ({ backgroundColor }) => backgroundColor };
+  color: ${ ({ theme }) => theme.color.white };
+  background-color: ${ ({ theme, color }) => theme.color[color] };
+  transition: ${ ({ theme }) => theme.transition };
 
   &:hover {
     transform: scale(1.05);
@@ -20,9 +21,9 @@ const Submit = styled.a`
   }
 `
 
-export default function SubmitButton({ backgroundColor, url, text }) {
+export default function SubmitButton({ color, url, text }) {
   return (
-    <Submit href={url} backgroundColor={backgroundColor}>
+    <Submit href={url} color={color}>
       {text}
     </Submit>
   )

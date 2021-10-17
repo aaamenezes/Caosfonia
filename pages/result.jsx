@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import Part from './Part'
-import SubmitButton from './SubmitButton'
-import getChords from '../utils/getChords'
+import pageWrapper from '../src/components/pageWrapper'
+import Part from '../src/components/Part'
+import SubmitButton from '../src/components/SubmitButton'
+import getChords from '../src/utils/getChords'
 
 const StyledResult = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ const SourceContent = styled.div`
   text-align: center;
 `
 
-export default function Result({ chord, acident, terca }) {
+function Result({ chord, acident, terca }) {
   const intro = []
   const verse1 = []
   const verse2 = []
@@ -86,3 +87,5 @@ export default function Result({ chord, acident, terca }) {
     </>
   )
 }
+
+export default pageWrapper(Result)

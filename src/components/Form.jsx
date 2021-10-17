@@ -1,40 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import updateOptions from '../utils/updateOptions'
 import SubmitButton from './SubmitButton'
 
-const Tom = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 30px 0;
-`
-
-const TomHeader = styled.header`
-  margin-bottom: 10px;
-`
-
-const InputGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+const StyledForm = styled.form`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 60px;
+  justify-items: center;
   padding: 5% 0;
 `
 
 const Select = styled.select`
   padding: 10px;
   margin: 20px 0;
-  background-color: $black;
+  background-color: ${ ({ theme }) => theme.color.black };
   border: none;
-  border-bottom: 2px solid $gray;
-  transition: $transition;
+  border-bottom: ${ ({ theme }) => `2px solid ${ theme.color.gray }` };
+  transition: ${ ({ theme }) => theme.transition };
   outline: none;
+  cursor: pointer;
 `
 
 const RadioGroup = styled.div`
   display: flex;
   margin: 20px 0 20px 10px;
   border: none;
-  border-bottom: 2px solid $gray;
+  border-bottom: ${ ({ theme }) => `2px solid ${ theme.color.gray }` };
   font-weight: bold;
   cursor: pointer;
 `
@@ -42,9 +34,10 @@ const RadioGroup = styled.div`
 const RadioItem = styled.input`
   display: none;
   
-  &:checked + .button {
-    background-color: $blue;
-    border-radius: $radius;
+  &:checked + button {
+    color: ${ ({ theme }) => theme.color.white };
+    background-color: ${ ({ theme }) => theme.color.blue };
+    border-radius: ${ ({ theme }) => theme.borderRadius };
   }
 `
 
@@ -55,12 +48,14 @@ const RadioButton = styled.button`
   width: 20px;
   height: 20px;
   padding: 20px;
+  border: none;
+  border-radius: ${ ({ theme }) => theme.borderRadius };
   background-color: transparent;
-  transition: $transition;
-  border-radius: $radius;
+  transition: ${ ({ theme }) => theme.transition };
+  cursor: pointer;
 
   &:hover {
-    background-color: lighten($color: $black, $amount: 10);
+    color: ${ ({ theme }) => theme.color.pink };
   }
 `
 
@@ -73,41 +68,10 @@ export default function Form({
 
   // Exibir/ocultar input:radios quando o usuário selecionar a nota random
   const [ groupRadioDisplay, setGroupRadioDisplay ] = useState('flex')
-  const [ inputGroupJustifyContent, setInputGroupJustifyContent ] = useState('space-between')
+  const [ inputsJustifyContent, setInputsJustifyContent ] = useState('space-between')
 
   // Marcar check no acident none
   const checkAcidentNone = useRef(null)
-
-  const updateOptions = () => {
-    switch (chord) {
-    case 'C':
-    case 'F':
-      setBemolDisplay('none')
-      setSustenidoDisplay('flex')
-      setGroupRadioDisplay('flex')
-      setInputGroupJustifyContent('space-between')
-      break
-    case 'D':
-    case 'G':
-    case 'A':
-      setSustenidoDisplay('flex')
-      setBemolDisplay('flex')
-      setGroupRadioDisplay('flex')
-      setInputGroupJustifyContent('space-between')
-      break
-    case 'E':
-    case 'B':
-      setSustenidoDisplay('none')
-      setBemolDisplay('flex')
-      setGroupRadioDisplay('flex')
-      setInputGroupJustifyContent('space-between')
-      break
-    case 'random':
-      setGroupRadioDisplay('none')
-      setInputGroupJustifyContent('center')
-      break
-    }
-  }
 
   useEffect(() => {
     updateOptions()
@@ -115,69 +79,68 @@ export default function Form({
     checkAcidentNone.current.click()
   }, [ chord ])
 
-  const auxAcident = event => {
+  function handleAcident(event) {
     setAcident(event.target.previousSibling.value)
     event.target.previousSibling.checked = true
   }
 
-  const auxTerca = event => {
+  function handleTerca(event) {
     setTerca(event.target.previousSibling.value)
     event.target.previousSibling.checked = true
   }
 
   return (
-    <Tom>
-      <TomHeader>
-        <h2>
-          Qual será o acorde tom da sua música?
-        </h2>
-      </TomHeader>
+    <StyledForm>
 
-      <InputGroup>
+      <Select name='chord' onChange={event => setChord(event.target.value)}>
+        <option value='C'>C</option>
+        <option value='D'>D</option>
+        <option value='E'>E</option>
+        <option value='F'>F</option>
+        <option value='G'>G</option>
+        <option value='A'>A</option>
+        <option value='B'>B</option>
+        <option value='random'>Aleatório</option>
+      </Select>
 
-        <Select name='chord' onChange={event => setChord(event.target.value)}>
-          <option value='C'>C</option>
-          <option value='D'>D</option>
-          <option value='E'>E</option>
-          <option value='F'>F</option>
-          <option value='G'>G</option>
-          <option value='A'>A</option>
-          <option value='B'>B</option>
-          <option value='random'>Aleatório</option>
-        </Select>
+      <RadioGroup>
+        <RadioItem
+          type='radio'
+          name='acident'
+          value='none'
+          defaultChecked
+          ref={checkAcidentNone}
+        />
+        <RadioButton type='button' onClick={event => handleAcident(event)} />
 
-        <RadioGroup>
-          <RadioItem
-            type='radio'
-            name='acident'
-            value='none'
-            defaultChecked
-            ref={checkAcidentNone}
-          />
-          <RadioButton onClick={event => auxAcident(event)}> </RadioButton>
+        <RadioItem type='radio' name='acident' value='sustenido' />
+        <RadioButton type='button' onClick={event => handleAcident(event)}>
+          #
+        </RadioButton>
 
-          <RadioItem type='radio' name='acident' value='sustenido' />
-          <RadioButton onClick={event => auxAcident(event)}>#</RadioButton>
+        <RadioItem type='radio' name='acident' value='bemol' />
+        <RadioButton type='button' onClick={event => handleAcident(event)}>
+          b
+        </RadioButton>
+      </RadioGroup>
 
-          <RadioItem type='radio' name='acident' value='bemol' />
-          <RadioButton onClick={event => auxAcident(event)}>b</RadioButton>
-        </RadioGroup>
+      <RadioGroup>
+        <RadioItem type='radio' name='terca' value='major' defaultChecked />
+        <RadioButton type='button' onClick={event => handleTerca(event)}>
+          M
+        </RadioButton>
 
-        <RadioGroup>
-          <RadioItem type='radio' name='terca' value='major' defaultChecked />
-          <RadioButton onClick={event => auxTerca(event)}>M</RadioButton>
-
-          <RadioItem type='radio' name='terca' value='minor' />
-          <RadioButton onClick={event => auxTerca(event)}>m</RadioButton>
-        </RadioGroup>
-
-      </InputGroup>
+        <RadioItem type='radio' name='terca' value='minor' />
+        <RadioButton type='button' onClick={event => handleTerca(event)}>
+          m
+        </RadioButton>
+      </RadioGroup>
 
       <SubmitButton
         url='/result'
         text='Criar sequência de acordes para a minha música!'
-        backgroundColor='pink'
+        color='pink'
       />
-    </Tom>
+    </StyledForm>
   )
 }
