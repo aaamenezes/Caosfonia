@@ -1,3 +1,11 @@
+const breakpoints = {
+  xs: '0',
+  sm: '576',
+  md: '768',
+  lg: '992',
+  xl: '1200',
+  xxl: '1400'
+}
 const color = {
   black: '#282C34',
   yellow: '#FAF248',
@@ -19,4 +27,11 @@ const fontMono = '"Ubuntu Mono", monospace'
 const transition = '.2s'
 const borderRadius = '5px'
 
-export const theme = { color, fontSize, fontMono, borderRadius, transition }
+export const theme = {
+  breakpoints,
+  color,
+  fontSize,
+  fontMono,
+  borderRadius,
+  transition
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import getBreakpoints from '../utils/getBreakpoints'
 import RadioButton from './Form/RadioButton'
 import RadioGroup from './Form/RadioGroup'
 import RadioItem from './Form/RadioItem'
@@ -7,11 +8,18 @@ import Select from './Form/Select'
 import SubmitButton from './SubmitButton'
 
 const StyledForm = styled.form`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 60px;
-  justify-items: center;
-  padding: 5% 0;
+  ${ getBreakpoints({
+    xs: css`
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: center;
+      padding: 5% 0;
+    `,
+    md: css`
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 60px;
+    `
+  }) }
 `
 
 export default function Form() {
@@ -34,21 +42,18 @@ export default function Form() {
 
   const handleSubmit = event => {
     event.preventDefault()
-    let resultURL = '/result?'
-    resultURL += `chord=${ chord }`
-    resultURL += `&acident=${ acident }`
-    resultURL += `&terca=${ terca }`
-    window.location.href = resultURL
+    const url = `/result?chord=${ chord }&acident=${ acident }&terca=${ terca }`
+    window.location.href = url
   }
 
   return (
     <StyledForm onSubmit={handleSubmit}>
-      <Select onChange={handleChord}>
+      <Select onChange={handleChord} center={chord === 'random'}>
         {$notesList}
         <option value='random'>Aleatório</option>
       </Select>
 
-      <RadioGroup>
+      <RadioGroup show={chord !== 'random'}>
         <RadioItem name='acident' value='none' onChange={handleAcident} check />
         <RadioButton
           htmlFor='acident-none'
@@ -74,7 +79,7 @@ export default function Form() {
         />
       </RadioGroup>
 
-      <RadioGroup>
+      <RadioGroup show={chord !== 'random'}>
         <RadioItem name='terca' value='major' onChange={handleTerca} check />
         <RadioButton
           htmlFor='terca-major'
